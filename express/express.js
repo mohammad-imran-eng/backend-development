@@ -1,38 +1,17 @@
 const express = require('express');
 const app = express();
-port = 3000;
+const dotenv = require('dotenv')
+dotenv.config()
+const {checkToken,checkPass} = require('./checkTokenMiddleware');
+PORT = process.env.PORT || 3000;
 
 
 app.use(express.json());
 
-const myToken ="1234"
-
-const checkToken = (req,res,next)=> {
-    if(req.query.token === myToken){
-         next()
-    }
-    else {
-       res.status(404).send({message:"unathorized access"});
-    }
-    
-    
-}
-
-const myPass = "24680"
-
 
 // custom middleware
 app.use(checkToken);
-app.use((req,res,next)=> {
-    console.log(req.query.pass)
-    if(req.query.pass == myPass){
-        ;
-        next();
-    }
-    else {
-        res.status(404).send({message: "password was invalid"});
-    }
-})
+app.use(checkPass);
 
 // dummy json data
 const newsData = {
@@ -73,6 +52,6 @@ app.get('/about',(req,res)=> {
 
 
 
-app.listen(port,()=> {
+app.listen(PORT,()=> {
     console.log("Server is running")
 })
